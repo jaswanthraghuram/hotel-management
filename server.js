@@ -23,10 +23,35 @@ const adminRoutes = require('./routes/adminRoutes')
 const app = express()
 const PORT = process.env.PORT || 3000
 
+// Initialize Database & Seeders safely for serverless
+let initPromise = null
+const initApp = async () => {
+  if (!initPromise) {
+    initPromise = (async () => {
+      try {
+        await initializeDatabase()
+        await seedDatabase()
+      } catch (err) {
+        console.error('[App Init Warning]', err)
+      }
+    })()
+  }
+  return initPromise
+}
+
+// Middleware to ensure DB init on serverless request
+app.use(async (req, res, next) => {
+  try {
+    await initApp()
+  } catch (err) {
+    // Continue gracefully
+  }
+  next()
+})
+
 // Security Configurations
 configureSecurity(app)
 app.use(cors())
-app.use(apiLimiter)
 
 // Body Parsers
 app.use(express.json())
@@ -62,30 +87,8 @@ app.use('/complaints', complaintRoutes)
 app.use('/customer', customerRoutes)
 app.use('/admin', adminRoutes)
 
-// Error Handler
+// Global Error Handler MUST be registered LAST after all routes!
 app.use(errorHandler)
-
-// Initialize Database & Seeders safely for serverless
-let initPromise = null
-const initApp = async () => {
-  if (!initPromise) {
-    initPromise = (async () => {
-      await initializeDatabase()
-      await seedDatabase()
-    })()
-  }
-  return initPromise
-}
-
-// Middleware to ensure DB init on Vercel serverless request
-app.use(async (req, res, next) => {
-  try {
-    await initApp()
-    next()
-  } catch (err) {
-    next()
-  }
-})
 
 // Database & Server Startup for Local Dev
 if (require.main === module) {

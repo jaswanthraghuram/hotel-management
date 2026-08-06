@@ -16,8 +16,17 @@ const {
 
 const seedDatabase = async () => {
   try {
-    console.log('[Seeder] Starting database sync and seed process...')
-    await sequelize.sync({ force: true }) // Fresh tables for clean startup
+    console.log('[Seeder] Syncing database models...')
+    await sequelize.sync()
+
+    // Check if database is already populated
+    const roleCount = await Role.count()
+    if (roleCount > 0) {
+      console.log('[Seeder] Database already populated. Skipping seed.')
+      return
+    }
+
+    console.log('[Seeder] Seeding initial luxury hotel data...')
 
     // 1. Seed Roles
     const roles = await Role.bulkCreate([
@@ -32,7 +41,7 @@ const seedDatabase = async () => {
       fullName: 'Lord Alexander Vance',
       email: 'admin@grandhaven.com',
       phone: '+1 800-555-0199',
-      password: 'admin123', // Will be hashed by User hooks
+      password: 'admin123',
       address: 'Grand Haven Executive Suites, Floor 12',
       idProof: 'ADM-99401-PASSPORT',
       status: 'active'
@@ -124,7 +133,7 @@ const seedDatabase = async () => {
 
     await BookingDetail.create({
       bookingId: sampleBooking.id,
-      roomId: 3, // Room 201
+      roomId: 3,
       pricePerNight: 190.00,
       nights: 3,
       subtotal: 570.00

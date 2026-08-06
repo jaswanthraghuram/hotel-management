@@ -6,12 +6,15 @@ exports.getRooms = async (req, res) => {
   const { roomTypeId, minPrice, maxPrice, status } = req.query
 
   const whereClause = {}
-  if (roomTypeId) whereClause.roomTypeId = roomTypeId
-  if (status) whereClause.status = status
-  if (minPrice || maxPrice) {
+  if (roomTypeId && roomTypeId !== '') whereClause.roomTypeId = roomTypeId
+  if (status && status !== '') whereClause.status = status
+
+  const parsedMin = parseFloat(minPrice)
+  const parsedMax = parseFloat(maxPrice)
+  if (!isNaN(parsedMin) || !isNaN(parsedMax)) {
     whereClause.price = {}
-    if (minPrice) whereClause.price[Op.gte] = parseFloat(minPrice)
-    if (maxPrice) whereClause.price[Op.lte] = parseFloat(maxPrice)
+    if (!isNaN(parsedMin)) whereClause.price[Op.gte] = parsedMin
+    if (!isNaN(parsedMax)) whereClause.price[Op.lte] = parsedMax
   }
 
   try {

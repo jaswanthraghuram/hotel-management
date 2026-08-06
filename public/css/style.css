@@ -1,0 +1,130 @@
+:root {
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --color-gold: #d97706;
+  --color-gold-hover: #b45309;
+  --color-gold-light: #fef3c7;
+  --color-navy: #0f172a;
+  --color-navy-subtle: #1e293b;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #1e293b;
+
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.text-gold {
+  color: var(--color-gold) !important;
+}
+
+.bg-gold {
+  background-color: var(--color-gold) !important;
+  color: #ffffff !important;
+}
+
+.border-gold {
+  border-color: var(--color-gold) !important;
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  border: none;
+  transition: all 0.25s ease;
+}
+
+.btn-gold:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(217, 119, 6, 0.35);
+}
+
+/* Luxury Navbar */
+.luxury-navbar {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(217, 119, 6, 0.3);
+  padding: 12px 0;
+}
+
+.luxury-navbar .nav-link {
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.luxury-navbar .nav-link:hover,
+.luxury-navbar .nav-link.active {
+  color: var(--color-gold);
+}
+
+.brand-badge-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 6px 12px rgba(217, 119, 6, 0.3);
+}
+
+.brand-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.brand-subtitle {
+  font-size: 0.7rem;
+  color: var(--color-gold);
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+/* User Avatar Small */
+.user-avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Cards & Hover Effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Shadow 2XL */
+.shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Luxury Footer */
+.luxury-footer {
+  background: #090d16;
+  border-top: 1px solid rgba(217, 119, 6, 0.2);
+}

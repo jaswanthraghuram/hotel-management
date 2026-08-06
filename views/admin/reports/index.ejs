@@ -1,0 +1,55 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<div class="container-fluid py-4 px-lg-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="font-heading fw-bold mb-0">Executive Financial & Analytics Reports</h2>
+      <p class="text-secondary small">Daily, Weekly, Monthly, and Annual revenue breakdown with audit logs.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-danger btn-sm fw-bold" onclick="window.print()"><i class="fa-solid fa-file-pdf me-1"></i> Print / Export Report</button>
+    </div>
+  </div>
+
+  <!-- Financial Transactions Table -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="card-header bg-dark text-gold font-heading fw-bold py-3">
+      <i class="fa-solid fa-file-invoice-dollar me-2"></i> Payment Audit Trail & Tax Breakdown
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle small mb-0">
+        <thead>
+          <tr>
+            <th>Payment #</th>
+            <th>Method</th>
+            <th>Base Amount</th>
+            <th>GST (12%)</th>
+            <th>Service Charge (5%)</th>
+            <th>Final Total</th>
+            <th>Status</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof payments !== 'undefined' && payments.length > 0) { %>
+            <% payments.forEach(p => { %>
+              <tr>
+                <td class="fw-bold font-heading text-gold"><%= p.paymentNumber %></td>
+                <td><span class="badge bg-light text-dark border"><%= p.paymentMethod %></span></td>
+                <td>$<%= parseFloat(p.amount).toFixed(2) %></td>
+                <td>$<%= parseFloat(p.gstAmount).toFixed(2) %></td>
+                <td>$<%= parseFloat(p.serviceCharge).toFixed(2) %></td>
+                <td class="fw-bold text-success">$<%= parseFloat(p.finalTotal).toFixed(2) %></td>
+                <td><span class="badge bg-success"><%= p.paymentStatus %></span></td>
+                <td class="text-muted"><%= new Date(p.createdAt).toLocaleString() %></td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

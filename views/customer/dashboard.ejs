@@ -1,0 +1,129 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container py-5">
+  <!-- Welcome Banner -->
+  <div class="card border-0 shadow-lg bg-dark text-light p-4 rounded-4 mb-4 border-start border-5 border-gold">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <span class="badge bg-gold text-dark font-heading fw-bold px-3 py-1 mb-2">Customer Portal</span>
+        <h2 class="font-heading fw-bold mb-1">Welcome back, <%= currentUser.fullName %></h2>
+        <p class="text-secondary small mb-0"><%= currentUser.email %> | Member ID: #GH-<%= currentUser.id %></p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/food/menu" class="btn btn-gold fw-bold btn-sm"><i class="fa-solid fa-utensils me-1"></i> Order Food</a>
+        <a href="/complaints/raise" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-headset me-1"></i> Raise Ticket</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Active Booking -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+        <h4 class="font-heading fw-bold mb-3 d-flex justify-content-between align-items-center">
+          <span><i class="fa-solid fa-key text-gold me-2"></i> Current Stay & Active Reservation</span>
+          <% if (activeBooking) { %>
+            <span class="badge bg-success px-3 py-2 rounded-pill"><%= activeBooking.status %></span>
+          <% } %>
+        </h4>
+
+        <% if (activeBooking) { %>
+          <div class="p-3 bg-light rounded-3 mb-3 border">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="text-muted small">Booking Reference</div>
+                <div class="fw-bold text-gold font-heading fs-5"><%= activeBooking.bookingNumber %></div>
+              </div>
+              <div class="col-md-6 text-md-end">
+                <div class="text-muted small">Total Paid Amount</div>
+                <div class="fw-bold text-success fs-5">$<%= parseFloat(activeBooking.totalAmount).toFixed(2) %></div>
+              </div>
+              <div class="col-6">
+                <div class="text-muted small"><i class="fa-solid fa-calendar-check me-1 text-gold"></i> Check-In</div>
+                <div class="fw-semibold"><%= activeBooking.checkInDate %></div>
+              </div>
+              <div class="col-6">
+                <div class="text-muted small"><i class="fa-solid fa-calendar-xmark me-1 text-gold"></i> Check-Out</div>
+                <div class="fw-semibold"><%= activeBooking.checkOutDate %></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a href="/bookings/<%= activeBooking.id %>/invoice" class="btn btn-outline-dark btn-sm fw-semibold"><i class="fa-solid fa-file-pdf text-danger me-1"></i> Download Invoice PDF</a>
+            <a href="/food/menu" class="btn btn-gold btn-sm fw-bold"><i class="fa-solid fa-bell-concierge me-1"></i> Order In-Room Dining</a>
+          </div>
+        <% } else { %>
+          <div class="text-center py-4 text-secondary">
+            <i class="fa-solid fa-bed fa-3x text-muted mb-2"></i>
+            <p>You have no active check-in or upcoming booking.</p>
+            <a href="/rooms" class="btn btn-gold btn-sm fw-bold"><i class="fa-solid fa-calendar-plus me-1"></i> Reserve a Suite</a>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Recent Room Service Orders -->
+      <div class="card border-0 shadow-sm p-4 rounded-4">
+        <h5 class="font-heading fw-bold mb-3"><i class="fa-solid fa-utensils text-gold me-2"></i> Recent Room Service Orders</h5>
+        <% if (typeof foodOrders !== 'undefined' && foodOrders.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table align-middle small mb-0">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Room</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% foodOrders.forEach(order => { %>
+                  <tr>
+                    <td class="fw-bold"><%= order.orderNumber %></td>
+                    <td><%= order.roomNumber || 'Suite 201' %></td>
+                    <td><span class="badge bg-warning text-dark"><%= order.status %></span></td>
+                    <td class="fw-bold text-gold">$<%= parseFloat(order.totalAmount).toFixed(2) %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <p class="text-muted small mb-0">No room service orders placed yet.</p>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Quick Shortcuts & Complaints Side Card -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+        <h5 class="font-heading fw-bold mb-3"><i class="fa-solid fa-headset text-gold me-2"></i> Room Support Tickets</h5>
+        <% if (typeof complaints !== 'undefined' && complaints.length > 0) { %>
+          <ul class="list-group list-group-flush small">
+            <% complaints.forEach(c => { %>
+              <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="fw-bold"><%= c.category %></div>
+                  <div class="text-muted"><%= c.status %></div>
+                </div>
+                <span class="badge bg-secondary"><%= c.complaintNumber %></span>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p class="text-muted small mb-3">No open tickets. Need assistance with AC, WiFi, or cleaning?</p>
+        <% } %>
+        <a href="/complaints/raise" class="btn btn-outline-dark btn-sm w-100 mt-2 fw-semibold"><i class="fa-solid fa-plus me-1"></i> Raise New Ticket</a>
+      </div>
+
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-dark text-light border-gold">
+        <h5 class="font-heading fw-bold text-gold mb-2"><i class="fa-solid fa-shield-halved me-2"></i> 24/7 VIP Concierge</h5>
+        <p class="small text-secondary mb-3">Need luggage assistance, spa booking, or airport transfer?</p>
+        <div class="fw-bold text-white small"><i class="fa-solid fa-phone text-gold me-2"></i> Dial Extension #0 from Room Phone</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

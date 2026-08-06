@@ -1,0 +1,64 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="row g-5">
+    <!-- Image Gallery -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-3">
+        <img src="<%= room.images && room.images.length > 0 ? room.images[0].imageUrl : '/images/rooms/deluxe-1.jpg' %>" class="w-100 object-fit-cover" height="420" alt="Main Suite View">
+      </div>
+
+      <h4 class="font-heading fw-bold mt-4 mb-3">Suite Overview & Features</h4>
+      <p class="text-secondary"><%= room.description || 'Designed for supreme comfort, this suite offers a harmony of luxury furnishings, high-speed fiber WiFi, and stunning panoramic views.' %></p>
+
+      <div class="card border-0 bg-light p-4 rounded-4 my-4">
+        <h5 class="font-heading fw-bold mb-3"><i class="fa-solid fa-star text-gold me-2"></i> Amenities Included</h5>
+        <div class="row g-3">
+          <div class="col-6"><i class="fa-solid fa-wifi me-2 text-gold"></i> High-Speed WiFi</div>
+          <div class="col-6"><i class="fa-solid fa-snowflake me-2 text-gold"></i> Climate Control AC</div>
+          <div class="col-6"><i class="fa-solid fa-tv me-2 text-gold"></i> 65" 4K Smart TV</div>
+          <div class="col-6"><i class="fa-solid fa-hot-tub-person me-2 text-gold"></i> Jacuzzi Bath</div>
+          <div class="col-6"><i class="fa-solid fa-mug-hot me-2 text-gold"></i> Espresso Bar</div>
+          <div class="col-6"><i class="fa-solid fa-shield-halved me-2 text-gold"></i> Electronic Safe</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instant Reservation Card -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-xl p-4 rounded-4 sticky-top" style="top: 100px;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="font-heading fw-bold text-gold mb-0">$<%= room.price %> <span class="fs-6 text-muted font-body">/ night</span></h3>
+          <span class="badge bg-dark text-gold px-3 py-2 rounded-pill"><%= room.roomType ? room.roomType.name : 'Suite' %></span>
+        </div>
+
+        <p class="small text-secondary mb-4"><i class="fa-solid fa-circle-check text-success me-1"></i> Best Rate Guarantee | Includes Breakfast & Concierge Access</p>
+
+        <form action="/bookings/create" method="GET">
+          <input type="hidden" name="roomId" value="<%= room.id %>">
+          
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Check-In Date</label>
+            <input type="date" class="form-control" name="checkInDate" required value="<%= new Date().toISOString().split('T')[0] %>">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Check-Out Date</label>
+            <input type="date" class="form-control" name="checkOutDate" required value="<%= new Date(Date.now() + 86400000).toISOString().split('T')[0] %>">
+          </div>
+
+          <% if (room.status === 'Available' && room.isBookable) { %>
+            <button type="submit" class="btn btn-gold w-100 fw-bold py-3 shadow mb-2"><i class="fa-solid fa-bolt me-2"></i> Reserve This Suite Now</button>
+          <% } else { %>
+            <button type="button" class="btn btn-secondary w-100 py-3 mb-2" disabled>Room Currently Unavailable (<%= room.status %>)</button>
+          <% } %>
+
+          <p class="small text-center text-muted mt-2 mb-0"><i class="fa-solid fa-lock me-1"></i> Instant Confirmation & 256-bit Encrypted Session</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

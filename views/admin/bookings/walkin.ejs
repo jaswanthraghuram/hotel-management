@@ -1,0 +1,71 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-2xl p-4 rounded-4 bg-white border-top border-4 border-gold">
+        <h3 class="font-heading fw-bold mb-2"><i class="fa-solid fa-person-walking-luggage text-gold me-2"></i> Offline Walk-In Reservation Wizard</h3>
+        <p class="text-secondary small mb-4">Register walk-in guests at reception, assign available suite, process immediate payment, and auto-check in.</p>
+
+        <form action="/admin/bookings/walkin" method="POST">
+          <h5 class="font-heading fw-bold text-gold border-bottom pb-2 mb-3">1. Guest Identification</h5>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Guest Full Name</label>
+              <input type="text" name="customerName" class="form-control" placeholder="Lord Alexander Vance" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Guest Email Address</label>
+              <input type="email" name="customerEmail" class="form-control" placeholder="guest@grandhaven.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Guest Phone Number</label>
+              <input type="text" name="customerPhone" class="form-control" placeholder="+1 800-555-0199" required>
+            </div>
+          </div>
+
+          <h5 class="font-heading fw-bold text-gold border-bottom pb-2 mb-3 mt-4">2. Room Assignment & Stay Dates</h5>
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Select Available Room</label>
+            <select name="roomId" class="form-select" required>
+              <% if (typeof availableRooms !== 'undefined' && availableRooms.length > 0) { %>
+                <% availableRooms.forEach(room => { %>
+                  <option value="<%= room.id %>">Room <%= room.roomNumber %> — <%= room.roomType ? room.roomType.name : 'Suite' %> ($<%= room.price %>/night)</option>
+                <% }) %>
+              <% } else { %>
+                <option value="">No Available Rooms</option>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Check-In Date</label>
+              <input type="date" name="checkInDate" class="form-control" value="<%= new Date().toISOString().split('T')[0] %>" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Check-Out Date</label>
+              <input type="date" name="checkOutDate" class="form-control" value="<%= new Date(Date.now() + 86400000).toISOString().split('T')[0] %>" required>
+            </div>
+          </div>
+
+          <h5 class="font-heading fw-bold text-gold border-bottom pb-2 mb-3 mt-4">3. Immediate Payment & Checkout</h5>
+          <div class="mb-4">
+            <label class="form-label small fw-bold">Received Payment Method</label>
+            <select name="paymentMethod" class="form-select" required>
+              <option value="Cash">Cash Payment</option>
+              <option value="UPI">UPI / QR Code Scan</option>
+              <option value="Credit Card">Credit Card Terminal</option>
+              <option value="Debit Card">Debit Card Terminal</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-gold w-100 fw-bold py-3 shadow fs-5"><i class="fa-solid fa-cash-register me-2"></i> Process Walk-In & Auto Check-In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

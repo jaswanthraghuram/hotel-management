@@ -1,0 +1,59 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<div class="container-fluid py-4 px-lg-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h2 class="font-heading fw-bold mb-0">Master Bookings & Offline Walk-ins</h2>
+      <p class="text-secondary small">View reservation records, process check-ins, check-outs, and print invoices.</p>
+    </div>
+    <a href="/admin/bookings/walkin" class="btn btn-gold fw-bold shadow"><i class="fa-solid fa-person-walking-luggage me-1"></i> Register Walk-In Guest</a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Booking #</th>
+            <th>Guest Name</th>
+            <th>Contact</th>
+            <th>Type</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+            <th>Status</th>
+            <th>Total Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof bookings !== 'undefined' && bookings.length > 0) { %>
+            <% bookings.forEach(b => { %>
+              <tr>
+                <td class="fw-bold font-heading text-gold"><%= b.bookingNumber %></td>
+                <td class="fw-bold"><%= b.customerName %></td>
+                <td class="small"><%= b.customerEmail %><br><span class="text-muted"><%= b.customerPhone %></span></td>
+                <td><span class="badge bg-light text-dark border"><%= b.bookingType %></span></td>
+                <td class="small"><%= b.checkInDate %></td>
+                <td class="small"><%= b.checkOutDate %></td>
+                <td>
+                  <% let badge = 'bg-primary' %>
+                  <% if (b.status === 'CheckedIn') badge = 'bg-success' %>
+                  <% if (b.status === 'CheckedOut') badge = 'bg-secondary' %>
+                  <% if (b.status === 'Cancelled') badge = 'bg-danger' %>
+                  <span class="badge <%= badge %>"><%= b.status %></span>
+                </td>
+                <td class="fw-bold text-success">$<%= parseFloat(b.totalAmount).toFixed(2) %></td>
+                <td>
+                  <a href="/admin/bookings/<%= b.id %>" class="btn btn-outline-dark btn-sm"><i class="fa-solid fa-gear me-1"></i> Manage</a>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

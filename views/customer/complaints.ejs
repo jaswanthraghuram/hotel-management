@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="font-heading fw-bold mb-0">My Support Tickets & Complaints</h3>
+      <p class="text-secondary small">Track resolution progress and staff notes.</p>
+    </div>
+    <a href="/complaints/raise" class="btn btn-gold btn-sm fw-bold"><i class="fa-solid fa-plus me-1"></i> Raise Ticket</a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Ticket #</th>
+            <th>Category</th>
+            <th>Room</th>
+            <th>Status</th>
+            <th>Assigned Staff</th>
+            <th>Resolution Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof complaints !== 'undefined' && complaints.length > 0) { %>
+            <% complaints.forEach(c => { %>
+              <tr>
+                <td class="fw-bold font-heading text-gold"><%= c.complaintNumber %></td>
+                <td class="fw-semibold"><%= c.category %></td>
+                <td>Room <%= c.roomNumber || '201' %></td>
+                <td>
+                  <% let badge = 'bg-warning text-dark' %>
+                  <% if (c.status === 'In Progress') badge = 'bg-info text-dark' %>
+                  <% if (c.status === 'Resolved' || c.status === 'Closed') badge = 'bg-success' %>
+                  <span class="badge <%= badge %>"><%= c.status %></span>
+                </td>
+                <td><%= c.assignedStaffName || 'Pending Assignment' %></td>
+                <td class="small text-muted"><%= c.resolutionNotes || 'Awaiting staff inspection.' %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">No support tickets submitted yet.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

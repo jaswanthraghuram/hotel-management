@@ -1,0 +1,171 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<!-- Luxury Hero Carousel -->
+<section class="hero-section text-white position-relative overflow-hidden py-5 d-flex align-items-center" style="min-height: 80vh; background: linear-gradient(180deg, rgba(15,23,42,0.6) 0%, rgba(15,23,42,0.92) 100%), url('/images/rooms/suite-1.jpg') center/cover no-repeat;">
+  <div class="container py-5 text-center text-lg-start">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <span class="badge bg-gold text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3"><i class="fa-solid fa-star me-1"></i> 5-Star Diamond Rated Resort</span>
+        <h1 class="display-3 fw-bold font-heading mb-3">Experience Unmatched Hospitality & Elegance</h1>
+        <p class="lead text-light mb-4">Discover lavish oceanfront suites, private jacuzzi decks, 24/7 VIP concierge, and gourmet room service at Grand Haven Resort & Spa.</p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+          <a href="/rooms" class="btn btn-gold btn-lg px-4 fw-bold shadow-lg"><i class="fa-solid fa-calendar-check me-2"></i> Explore Accommodations</a>
+          <a href="/food/menu" class="btn btn-outline-light btn-lg px-4 fw-semibold"><i class="fa-solid fa-utensils me-2"></i> In-Room Dining</a>
+        </div>
+      </div>
+
+      <!-- Quick Room Availability Search Card -->
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-2xl p-4 bg-dark bg-opacity-75 backdrop-blur text-light rounded-4 border-gold">
+          <h4 class="font-heading text-gold mb-3"><i class="fa-solid fa-magnifying-glass me-2"></i> Find Available Suites</h4>
+          <form action="/rooms" method="GET">
+            <div class="mb-3">
+              <label class="form-label small text-secondary">Room Category</label>
+              <select name="roomTypeId" class="form-select bg-dark text-light border-secondary">
+                <option value="">All Luxury Categories</option>
+                <option value="1">Single Room</option>
+                <option value="2">Double Room</option>
+                <option value="3">Deluxe Sea View Suite</option>
+                <option value="4">Family Villa</option>
+                <option value="5">Presidential Penthouse Suite</option>
+              </select>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small text-secondary">Check-In</label>
+                <input type="date" class="form-control bg-dark text-light border-secondary" name="checkInDate" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small text-secondary">Check-Out</label>
+                <input type="date" class="form-control bg-dark text-light border-secondary" name="checkOutDate" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-gold w-100 fw-bold py-2"><i class="fa-solid fa-arrow-right me-2"></i> Check Live Availability</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Rooms Section -->
+<section class="py-5 bg-light-subtle">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="text-gold fw-bold text-uppercase tracking-wider small">Refined Accommodations</span>
+      <h2 class="font-heading fw-bold display-6">Featured Luxury Suites & Villas</h2>
+      <p class="text-secondary max-w-600 mx-auto">Each suite is meticulously furnished with plush king beds, high-speed WiFi, smart amenities, and panoramic ocean or skyline views.</p>
+    </div>
+
+    <div class="row g-4">
+      <% if (typeof featuredRooms !== 'undefined' && featuredRooms.length > 0) { %>
+        <% featuredRooms.forEach(room => { %>
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover">
+              <div class="position-relative">
+                <img src="<%= room.images && room.images.length > 0 ? room.images[0].imageUrl : '/images/rooms/deluxe-1.jpg' %>" class="card-img-top object-fit-cover" height="240" alt="Room Photo">
+                <span class="badge bg-gold text-dark position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill fw-bold">$<%= room.price %> / night</span>
+              </div>
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title font-heading fw-bold mb-0">Room <%= room.roomNumber %></h5>
+                  <span class="badge bg-primary-subtle text-primary border border-primary px-2 py-1"><%= room.roomType ? room.roomType.name : 'Suite' %></span>
+                </div>
+                <p class="card-text text-secondary small mb-3"><%= room.description || 'Spacious luxury suite with premium amenities.' %></p>
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                  <span class="small text-muted"><i class="fa-solid fa-user me-1 text-gold"></i> Max <%= room.roomType ? room.roomType.capacity : 2 %> Guests</span>
+                  <a href="/rooms/<%= room.id %>" class="btn btn-outline-dark btn-sm fw-semibold">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <!-- Default Demo Cards -->
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover">
+            <img src="/images/rooms/deluxe-1.jpg" class="card-img-top object-fit-cover" height="240" alt="Deluxe Suite">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title font-heading fw-bold mb-0">Deluxe Sea View Suite</h5>
+                <span class="badge bg-gold text-dark">$280 / night</span>
+              </div>
+              <p class="card-text text-secondary small">King bed, Jacuzzi bath, private ocean balcony, and complimentary breakfast.</p>
+              <a href="/rooms" class="btn btn-gold btn-sm w-100 fw-bold mt-2">Book Suite</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover">
+            <img src="/images/rooms/family-1.jpg" class="card-img-top object-fit-cover" height="240" alt="Family Villa">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title font-heading fw-bold mb-0">Grand Family Villa</h5>
+                <span class="badge bg-gold text-dark">$380 / night</span>
+              </div>
+              <p class="card-text text-secondary small">2 Bedrooms, spacious lounge, kitchenette, dining deck, max 4 guests.</p>
+              <a href="/rooms" class="btn btn-gold btn-sm w-100 fw-bold mt-2">Book Villa</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover">
+            <img src="/images/rooms/suite-1.jpg" class="card-img-top object-fit-cover" height="240" alt="Presidential Suite">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title font-heading fw-bold mb-0">Presidential Penthouse</h5>
+                <span class="badge bg-gold text-dark">$650 / night</span>
+              </div>
+              <p class="card-text text-secondary small">Private infinity pool, butler service, ocean deck, master whirlpool Jacuzzi.</p>
+              <a href="/rooms" class="btn btn-gold btn-sm w-100 fw-bold mt-2">Book Penthouse</a>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- Amenities & Resort Highlights -->
+<section class="py-5 bg-dark text-light border-top border-gold">
+  <div class="container py-4 text-center">
+    <span class="text-gold fw-bold text-uppercase small">World-Class Experiences</span>
+    <h2 class="font-heading fw-bold mb-5">Resort Amenities & Services</h2>
+
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="p-4 bg-dark-subtle rounded-4 border border-secondary">
+          <i class="fa-solid fa-water-ladder fa-3x text-gold mb-3"></i>
+          <h5 class="font-heading fw-bold">Infinity Pool Deck</h5>
+          <p class="small text-secondary mb-0">Heated infinity pool overlooking the sunset bay.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="p-4 bg-dark-subtle rounded-4 border border-secondary">
+          <i class="fa-solid fa-utensils fa-3x text-gold mb-3"></i>
+          <h5 class="font-heading fw-bold">Gourmet Dining</h5>
+          <p class="small text-secondary mb-0">Chef-curated menus & 24/7 room service.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="p-4 bg-dark-subtle rounded-4 border border-secondary">
+          <i class="fa-solid fa-spa fa-3x text-gold mb-3"></i>
+          <h5 class="font-heading fw-bold">Luxury Spa & Wellness</h5>
+          <p class="small text-secondary mb-0">Aromatherapy massage & hydrotherapy baths.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="p-4 bg-dark-subtle rounded-4 border border-secondary">
+          <i class="fa-solid fa-concierge-bell fa-3x text-gold mb-3"></i>
+          <h5 class="font-heading fw-bold">24/7 VIP Concierge</h5>
+          <p class="small text-secondary mb-0">Personalized butler & itinerary planning.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

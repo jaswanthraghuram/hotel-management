@@ -1,0 +1,63 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="card border-0 shadow-2xl p-4 rounded-4 bg-white border-top border-4 border-gold">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div>
+        <span class="badge bg-gold text-dark font-heading fw-bold px-3 py-1 mb-1">Booking Control</span>
+        <h2 class="font-heading fw-bold mb-0">Booking <%= booking.bookingNumber %></h2>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/bookings/<%= booking.id %>/invoice" class="btn btn-outline-danger fw-bold"><i class="fa-solid fa-file-pdf me-1"></i> Download Invoice PDF</a>
+        <a href="/admin/bookings" class="btn btn-secondary">Back to List</a>
+      </div>
+    </div>
+
+    <!-- Status Transition Actions Bar -->
+    <div class="p-3 bg-light rounded-3 mb-4 border d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <span class="text-muted small">Current Booking Status:</span>
+        <span class="fs-5 font-heading fw-bold text-gold ms-2"><%= booking.status %></span>
+      </div>
+
+      <div class="d-flex gap-2">
+        <% if (booking.status === 'Confirmed' || booking.status === 'Pending') { %>
+          <form action="/admin/bookings/<%= booking.id %>/checkin" method="POST">
+            <button type="submit" class="btn btn-success fw-bold"><i class="fa-solid fa-key me-1"></i> Process Guest Check-In</button>
+          </form>
+        <% } %>
+
+        <% if (booking.status === 'CheckedIn') { %>
+          <form action="/admin/bookings/<%= booking.id %>/checkout" method="POST">
+            <button type="submit" class="btn btn-danger fw-bold"><i class="fa-solid fa-right-from-bracket me-1"></i> Process Check-Out (Auto-Frees Room)</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="p-3 bg-light rounded-3 border">
+          <h5 class="font-heading fw-bold text-gold mb-3">Guest Information</h5>
+          <div class="mb-2"><strong>Name:</strong> <%= booking.customerName %></div>
+          <div class="mb-2"><strong>Email:</strong> <%= booking.customerEmail %></div>
+          <div class="mb-2"><strong>Phone:</strong> <%= booking.customerPhone %></div>
+          <div class="mb-2"><strong>Type:</strong> <%= booking.bookingType %></div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="p-3 bg-light rounded-3 border">
+          <h5 class="font-heading fw-bold text-gold mb-3">Payment Summary</h5>
+          <div class="mb-2"><strong>Payment Number:</strong> <%= booking.payment ? booking.payment.paymentNumber : 'N/A' %></div>
+          <div class="mb-2"><strong>Method:</strong> <%= booking.payment ? booking.payment.paymentMethod : 'Credit Card' %></div>
+          <div class="mb-2"><strong>Status:</strong> <%= booking.payment ? booking.payment.paymentStatus : 'Paid' %></div>
+          <div class="mb-2"><strong>Final Total:</strong> $<%= booking.payment ? parseFloat(booking.payment.finalTotal).toFixed(2) : parseFloat(booking.totalAmount).toFixed(2) %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

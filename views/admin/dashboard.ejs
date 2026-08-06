@@ -1,0 +1,195 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container-fluid py-4 px-lg-5">
+  <!-- Executive Header Bar -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <span class="badge bg-gold text-dark font-heading fw-bold px-3 py-1 mb-1">Executive Admin Portal</span>
+      <h2 class="font-heading fw-bold mb-0">Resort Command Center & Analytics</h2>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="/admin/bookings/walkin" class="btn btn-gold fw-bold shadow"><i class="fa-solid fa-person-walking-luggage me-1"></i> New Walk-In Booking</a>
+      <a href="/admin/rooms/add" class="btn btn-outline-dark fw-bold"><i class="fa-solid fa-plus me-1"></i> Add Room</a>
+      <a href="/admin/reports" class="btn btn-outline-secondary"><i class="fa-solid fa-chart-pie me-1"></i> Executive Reports</a>
+    </div>
+  </div>
+
+  <!-- Metric Stat Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm p-3 rounded-4 bg-white border-start border-4 border-gold">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-secondary small fw-bold text-uppercase">Total Inventory</span>
+          <i class="fa-solid fa-hotel fa-xl text-gold"></i>
+        </div>
+        <div class="fs-3 font-heading fw-bold"><%= metrics.totalRooms %> Rooms</div>
+        <div class="small text-success fw-semibold"><i class="fa-solid fa-check-circle me-1"></i> <%= metrics.availableRooms %> Available | <%= metrics.occupiedRooms %> Occupied</div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm p-3 rounded-4 bg-white border-start border-4 border-primary">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-secondary small fw-bold text-uppercase">Today's Revenue</span>
+          <i class="fa-solid fa-dollar-sign fa-xl text-primary"></i>
+        </div>
+        <div class="fs-3 font-heading fw-bold">$<%= metrics.todayRevenue %></div>
+        <div class="small text-muted">Total Revenue: $<%= metrics.totalRevenue %></div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm p-3 rounded-4 bg-white border-start border-4 border-success">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-secondary small fw-bold text-uppercase">Today's Bookings</span>
+          <i class="fa-solid fa-calendar-check fa-xl text-success"></i>
+        </div>
+        <div class="fs-3 font-heading fw-bold"><%= metrics.todayBookings %> Stay(s)</div>
+        <div class="small text-muted"><%= metrics.todayWalkinBookings %> Offline Walk-ins</div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm p-3 rounded-4 bg-white border-start border-4 border-warning">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-secondary small fw-bold text-uppercase">Pending Operations</span>
+          <i class="fa-solid fa-bell-concierge fa-xl text-warning"></i>
+        </div>
+        <div class="fs-3 font-heading fw-bold"><%= metrics.pendingFoodOrders + metrics.pendingComplaints %> Items</div>
+        <div class="small text-danger fw-semibold"><%= metrics.pendingFoodOrders %> Food Orders | <%= metrics.pendingComplaints %> Tickets</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics Charts Section -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <h5 class="font-heading fw-bold mb-3 d-flex justify-content-between align-items-center">
+          <span><i class="fa-solid fa-chart-line text-gold me-2"></i> Weekly Revenue & Occupancy Performance</span>
+          <span class="badge bg-light text-dark border">Real-Time Data</span>
+        </h5>
+        <canvas id="revenueChart" height="110"></canvas>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <h5 class="font-heading fw-bold mb-3"><i class="fa-solid fa-chart-pie text-gold me-2"></i> Room Status Distribution</h5>
+        <canvas id="occupancyChart" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Tables Row -->
+  <div class="row g-4">
+    <!-- Recent Bookings -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="font-heading fw-bold mb-0"><i class="fa-solid fa-receipt me-2 text-gold"></i> Recent Bookings & Walk-Ins</h5>
+          <a href="/admin/bookings" class="small text-gold text-decoration-none fw-bold">View All</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle small mb-0">
+            <thead>
+              <tr>
+                <th>Booking #</th>
+                <th>Guest</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (recentBookings && recentBookings.length > 0) { %>
+                <% recentBookings.forEach(b => { %>
+                  <tr>
+                    <td class="fw-bold font-heading text-gold"><%= b.bookingNumber %></td>
+                    <td><%= b.customerName %></td>
+                    <td><span class="badge bg-light text-dark border"><%= b.bookingType %></span></td>
+                    <td><span class="badge bg-info text-dark"><%= b.status %></span></td>
+                    <td><a href="/admin/bookings/<%= b.id %>" class="btn btn-outline-dark btn-sm py-0 px-2">Manage</a></td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Complaints -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="font-heading fw-bold mb-0"><i class="fa-solid fa-headset me-2 text-gold"></i> Pending Complaints</h5>
+          <a href="/admin/complaints" class="small text-gold text-decoration-none fw-bold">View All</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle small mb-0">
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Category</th>
+                <th>Room</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (recentComplaints && recentComplaints.length > 0) { %>
+                <% recentComplaints.forEach(c => { %>
+                  <tr>
+                    <td class="fw-bold"><%= c.complaintNumber %></td>
+                    <td><%= c.category %></td>
+                    <td>Room <%= c.roomNumber %></td>
+                    <td><span class="badge bg-warning text-dark"><%= c.status %></span></td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Chart 1: Revenue Line Chart
+    const ctx1 = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Revenue ($)',
+          data: [2400, 3100, 2800, 4200, 5800, 7200, 6400],
+          borderColor: '#d97706',
+          backgroundColor: 'rgba(217, 119, 6, 0.15)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // Chart 2: Occupancy Donut Chart
+    const ctx2 = document.getElementById('occupancyChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: ['Available', 'Occupied', 'Reserved', 'Maintenance'],
+        datasets: [{
+          data: [<%= metrics.availableRooms %>, <%= metrics.occupiedRooms %>, <%= metrics.reservedRooms %>, <%= metrics.maintenanceRooms %>],
+          backgroundColor: ['#10b981', '#ef4444', '#f59e0b', '#64748b']
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,49 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-2xl p-4 rounded-4 bg-white border-top border-4 border-gold">
+        <h3 class="font-heading fw-bold mb-2"><i class="fa-solid fa-headset text-gold me-2"></i> Raise Room Support Ticket</h3>
+        <p class="text-secondary small mb-4">Submit issues regarding AC, WiFi, housekeeping, or room amenities for immediate staff resolution.</p>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger small"><%= error %></div>
+        <% } %>
+
+        <form action="/complaints/raise" method="POST">
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Room Number / Suite</label>
+            <input type="text" name="roomNumber" class="form-control" placeholder="e.g. 201" required value="201">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Complaint Category</label>
+            <select name="category" class="form-select" required>
+              <option value="AC Problem">AC Problem</option>
+              <option value="TV Problem">TV Problem</option>
+              <option value="WiFi Problem">WiFi Problem</option>
+              <option value="Bathroom Problem">Bathroom Problem</option>
+              <option value="Water Leakage">Water Leakage</option>
+              <option value="Electricity">Electricity</option>
+              <option value="Cleaning Request">Cleaning Request</option>
+              <option value="Food Issue">Food Issue</option>
+              <option value="Room Service Delay">Room Service Delay</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-bold">Detailed Description</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Describe the issue so staff can bring the necessary tools or items..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-gold w-100 fw-bold py-2 shadow"><i class="fa-solid fa-paper-plane me-2"></i> Dispatch Support Ticket</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

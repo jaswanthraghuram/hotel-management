@@ -1,0 +1,103 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<div class="container-fluid py-4 px-lg-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="font-heading fw-bold mb-0">Complaint & Maintenance Desk</h2>
+      <p class="text-secondary small">Assign staff members and add resolution notes to guest service tickets.</p>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Ticket #</th>
+            <th>Room</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Assigned Staff</th>
+            <th>Resolution Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof complaints !== 'undefined' && complaints.length > 0) { %>
+            <% complaints.forEach(c => { %>
+              <tr>
+                <td class="fw-bold font-heading text-gold"><%= c.complaintNumber %></td>
+                <td><span class="badge bg-dark">Room <%= c.roomNumber %></span></td>
+                <td class="fw-semibold"><%= c.category %></td>
+                <td class="small text-muted" style="max-width: 250px;"><%= c.description %></td>
+                <td>
+                  <% let badge = 'bg-warning text-dark' %>
+                  <% if (c.status === 'In Progress') badge = 'bg-info text-dark' %>
+                  <% if (c.status === 'Resolved' || c.status === 'Closed') badge = 'bg-success' %>
+                  <span class="badge <%= badge %>"><%= c.status %></span>
+                </td>
+                <td><%= c.assignedStaffName || 'Unassigned' %></td>
+                <td>
+                  <!-- Quick Update Form Modal Trigger -->
+                  <button type="button" class="btn btn-outline-dark btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#complaintModal<%= c.id %>">
+                    <i class="fa-solid fa-user-gear me-1"></i> Resolve
+                  </button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="complaintModal<%= c.id %>" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content rounded-4 border-0">
+                        <div class="modal-header bg-dark text-light border-gold">
+                          <h5 class="modal-title font-heading fw-bold text-gold">Update Ticket <%= c.complaintNumber %></h5>
+                          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form action="/admin/complaints/<%= c.id %>/update" method="POST">
+                          <div class="modal-body p-4">
+                            <div class="mb-3">
+                              <label class="form-label small fw-bold">Assign Staff Member</label>
+                              <select name="assignedStaffId" class="form-select">
+                                <option value="">Select Staff</option>
+                                <% if (typeof staffMembers !== 'undefined') { %>
+                                  <% staffMembers.forEach(s => { %>
+                                    <option value="<%= s.id %>" <%= c.assignedStaffId === s.id ? 'selected' : '' %>><%= s.fullName %> (<%= s.email %>)</option>
+                                  <% }) %>
+                                <% } %>
+                              </select>
+                            </div>
+
+                            <div class="mb-3">
+                              <label class="form-label small fw-bold">Ticket Status</label>
+                              <select name="status" class="form-select">
+                                <option value="Submitted" <%= c.status === 'Submitted' ? 'selected' : '' %>>Submitted</option>
+                                <option value="Assigned" <%= c.status === 'Assigned' ? 'selected' : '' %>>Assigned</option>
+                                <option value="In Progress" <%= c.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                                <option value="Resolved" <%= c.status === 'Resolved' ? 'selected' : '' %>>Resolved</option>
+                                <option value="Closed" <%= c.status === 'Closed' ? 'selected' : '' %>>Closed</option>
+                              </select>
+                            </div>
+
+                            <div class="mb-3">
+                              <label class="form-label small fw-bold">Resolution Notes</label>
+                              <textarea name="resolutionNotes" class="form-control" rows="3" placeholder="Notes regarding tools used, parts replaced, or staff action..."><%= c.resolutionNotes || '' %></textarea>
+                            </div>
+                          </div>
+                          <div class="modal-footer bg-light border-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-gold fw-bold"><i class="fa-solid fa-save me-1"></i> Save Ticket Resolution</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

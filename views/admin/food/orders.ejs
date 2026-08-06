@@ -1,0 +1,71 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<div class="container-fluid py-4 px-lg-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="font-heading fw-bold mb-0">Room Service Kitchen Pipeline</h2>
+      <p class="text-secondary small">Update order status: Pending &rarr; Accepted &rarr; Preparing &rarr; Ready &rarr; Delivered &rarr; Completed.</p>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Order #</th>
+            <th>Room</th>
+            <th>Items</th>
+            <th>Status</th>
+            <th>Total Amount</th>
+            <th>Update Pipeline Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof orders !== 'undefined' && orders.length > 0) { %>
+            <% orders.forEach(o => { %>
+              <tr>
+                <td class="fw-bold font-heading text-gold"><%= o.orderNumber %></td>
+                <td><span class="badge bg-dark"><%= o.roomNumber || 'Suite 201' %></span></td>
+                <td>
+                  <% if (o.items && o.items.length > 0) { %>
+                    <% o.items.forEach(i => { %>
+                      <div class="small"><%= i.quantity %>x <%= i.foodItemName %> ($<%= i.subtotal %>)</div>
+                    <% }) %>
+                  <% } else { %>
+                    <div class="small text-muted">Gourmet Room Service Meal</div>
+                  <% } %>
+                </td>
+                <td>
+                  <% let badge = 'bg-warning text-dark' %>
+                  <% if (o.status === 'Preparing') badge = 'bg-info text-dark' %>
+                  <% if (o.status === 'Ready') badge = 'bg-primary' %>
+                  <% if (o.status === 'Delivered' || o.status === 'Completed') badge = 'bg-success' %>
+                  <span class="badge <%= badge %>"><%= o.status %></span>
+                </td>
+                <td class="fw-bold text-success">$<%= parseFloat(o.totalAmount).toFixed(2) %></td>
+                <td>
+                  <form action="/admin/food/orders/<%= o.id %>/status" method="POST" class="d-flex gap-2">
+                    <select name="status" class="form-select form-select-sm">
+                      <option value="Pending" <%= o.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                      <option value="Accepted" <%= o.status === 'Accepted' ? 'selected' : '' %>>Accepted</option>
+                      <option value="Preparing" <%= o.status === 'Preparing' ? 'selected' : '' %>>Preparing</option>
+                      <option value="Ready" <%= o.status === 'Ready' ? 'selected' : '' %>>Ready</option>
+                      <option value="Delivered" <%= o.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                      <option value="Completed" <%= o.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                      <option value="Cancelled" <%= o.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                    </select>
+                    <button type="submit" class="btn btn-gold btn-sm fw-bold">Update</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

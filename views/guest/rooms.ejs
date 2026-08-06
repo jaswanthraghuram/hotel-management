@@ -1,0 +1,101 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="bg-dark text-light py-5 position-relative border-bottom border-gold">
+  <div class="container text-center py-3">
+    <h1 class="font-heading display-5 fw-bold">Explore Our Accommodations</h1>
+    <p class="text-secondary max-w-600 mx-auto">Select from our collection of ocean-view suites, deluxe rooms, and family villas.</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <!-- Live Search & Filter Bar -->
+  <div class="card border-0 shadow-sm p-4 mb-5 rounded-4 bg-white">
+    <form action="/rooms" method="GET" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-uppercase text-secondary">Room Category</label>
+        <select name="roomTypeId" class="form-select">
+          <option value="">All Categories</option>
+          <% if (typeof roomTypes !== 'undefined') { %>
+            <% roomTypes.forEach(rt => { %>
+              <option value="<%= rt.id %>" <%= query && query.roomTypeId == rt.id ? 'selected' : '' %>><%= rt.name %> (from $<%= rt.basePrice %>)</option>
+            <% }) %>
+          <% } %>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-uppercase text-secondary">Status Filter</label>
+        <select name="status" class="form-select">
+          <option value="">All Statuses</option>
+          <option value="Available" <%= query && query.status === 'Available' ? 'selected' : '' %>>Available Only</option>
+          <option value="Reserved" <%= query && query.status === 'Reserved' ? 'selected' : '' %>>Reserved</option>
+          <option value="Occupied" <%= query && query.status === 'Occupied' ? 'selected' : '' %>>Occupied</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label class="form-label small fw-bold text-uppercase text-secondary">Max Price ($)</label>
+        <input type="number" name="maxPrice" class="form-control" placeholder="e.g. 500" value="<%= query ? query.maxPrice || '' : '' %>">
+      </div>
+
+      <div class="col-md-4 d-flex gap-2">
+        <button type="submit" class="btn btn-gold fw-bold flex-grow-1 py-2"><i class="fa-solid fa-filter me-1"></i> Filter Suites</button>
+        <a href="/rooms" class="btn btn-outline-secondary py-2"><i class="fa-solid fa-rotate me-1"></i> Reset</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Room Cards Grid -->
+  <div class="row g-4">
+    <% if (typeof rooms !== 'undefined' && rooms.length > 0) { %>
+      <% rooms.forEach(room => { %>
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover position-relative">
+            <div class="position-relative">
+              <img src="<%= room.images && room.images.length > 0 ? room.images[0].imageUrl : '/images/rooms/deluxe-1.jpg' %>" class="card-img-top object-fit-cover" height="250" alt="Suite Photo">
+              
+              <!-- Status Badge -->
+              <% let badgeClass = 'bg-success' %>
+              <% if (room.status === 'Reserved') badgeClass = 'bg-warning text-dark' %>
+              <% if (room.status === 'Occupied') badgeClass = 'bg-danger' %>
+              <% if (room.status === 'Maintenance' || room.status === 'Cleaning') badgeClass = 'bg-secondary' %>
+              <span class="badge <%= badgeClass %> position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill fw-bold shadow"><%= room.status %></span>
+              
+              <span class="badge bg-dark text-gold position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill fw-bold shadow">$<%= room.price %> / night</span>
+            </div>
+
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+              <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title font-heading fw-bold mb-0">Room <%= room.roomNumber %></h5>
+                  <span class="badge bg-primary-subtle text-primary border border-primary"><%= room.roomType ? room.roomType.name : 'Suite' %></span>
+                </div>
+                <p class="card-text text-secondary small mb-3"><%= room.description || 'Luxury suite featuring plush bedding, ocean balcony, and smart amenities.' %></p>
+                <div class="small text-muted mb-3"><i class="fa-solid fa-list-check me-1 text-gold"></i> Amenities: <%= room.amenities || 'WiFi, AC, Smart TV, Mini Bar' %></div>
+              </div>
+
+              <div class="d-flex gap-2 pt-3 border-top">
+                <a href="/rooms/<%= room.id %>" class="btn btn-outline-dark btn-sm flex-grow-1 fw-semibold">View Details</a>
+                <% if (room.status === 'Available' && room.isBookable) { %>
+                  <a href="/bookings/create?roomId=<%= room.id %>" class="btn btn-gold btn-sm fw-bold px-3">Book Now</a>
+                <% } else { %>
+                  <button class="btn btn-secondary btn-sm disabled px-3">Unavailable</button>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="col-12 text-center py-5">
+        <i class="fa-solid fa-bed fa-4x text-muted mb-3"></i>
+        <h4 class="font-heading">No Rooms Match Your Filter</h4>
+        <p class="text-secondary">Try adjusting your price range or room category parameters.</p>
+        <a href="/rooms" class="btn btn-gold btn-sm fw-bold">Reset Filters</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,68 @@
+<nav class="navbar navbar-expand-lg sticky-top luxury-navbar">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+      <div class="brand-badge-icon">
+        <i class="fa-solid fa-hotel"></i>
+      </div>
+      <div>
+        <div class="brand-title">GRAND HAVEN</div>
+        <div class="brand-subtitle">RESORT & SPA</div>
+      </div>
+    </a>
+
+    <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-lg-3">
+        <li class="nav-item">
+          <a class="nav-link <%= typeof path !== 'undefined' && path === '/' ? 'active' : '' %>" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= typeof path !== 'undefined' && path.startsWith('/rooms') ? 'active' : '' %>" href="/rooms">Accommodations</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= typeof path !== 'undefined' && path.startsWith('/food') ? 'active' : '' %>" href="/food/menu">In-Room Dining</a>
+        </li>
+
+        <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+          <% if (currentUser.roleId === 1 || currentUser.role === 'Admin') { %>
+            <li class="nav-item">
+              <a class="btn btn-outline-warning btn-sm fw-bold px-3 py-1" href="/admin/dashboard">
+                <i class="fa-solid fa-user-shield me-1"></i> Admin Portal
+              </a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/customer/dashboard">
+                <i class="fa-solid fa-chart-line me-1"></i> Dashboard
+              </a>
+            </li>
+          <% } %>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+              <div class="user-avatar-sm"><%= currentUser.fullName ? currentUser.fullName.charAt(0) : 'U' %></div>
+              <span><%= currentUser.fullName %></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg">
+              <li><a class="dropdown-item" href="/customer/dashboard"><i class="fa-solid fa-user me-2 text-gold"></i> My Dashboard</a></li>
+              <li><a class="dropdown-item" href="/customer/bookings"><i class="fa-solid fa-calendar-check me-2 text-gold"></i> My Bookings</a></li>
+              <li><a class="dropdown-item" href="/customer/complaints"><i class="fa-solid fa-headset me-2 text-gold"></i> Support Tickets</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="/auth/logout"><i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out</a></li>
+            </ul>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/login">Sign In</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-gold btn-sm px-3 py-2 fw-semibold" href="/auth/register">Book Stay</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

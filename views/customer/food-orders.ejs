@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="font-heading fw-bold mb-0">Room Service Orders</h3>
+      <p class="text-secondary small">Track preparation status and delivery for your room orders.</p>
+    </div>
+    <a href="/food/menu" class="btn btn-gold btn-sm fw-bold"><i class="fa-solid fa-utensils me-1"></i> Order Food</a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Order #</th>
+            <th>Room / Suite</th>
+            <th>Status</th>
+            <th>Order Date</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof orders !== 'undefined' && orders.length > 0) { %>
+            <% orders.forEach(o => { %>
+              <tr>
+                <td class="fw-bold font-heading text-gold"><%= o.orderNumber %></td>
+                <td><%= o.roomNumber || 'Suite 201' %></td>
+                <td>
+                  <% let badge = 'bg-warning text-dark' %>
+                  <% if (o.status === 'Preparing') badge = 'bg-info text-dark' %>
+                  <% if (o.status === 'Delivered' || o.status === 'Completed') badge = 'bg-success' %>
+                  <% if (o.status === 'Cancelled') badge = 'bg-danger' %>
+                  <span class="badge <%= badge %>"><%= o.status %></span>
+                </td>
+                <td class="small text-muted"><%= new Date(o.createdAt).toLocaleString() %></td>
+                <td class="fw-bold text-gold">$<%= parseFloat(o.totalAmount).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="5" class="text-center py-4 text-muted">No room service orders placed yet.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="font-heading fw-bold mb-0">My Reservation History</h3>
+      <p class="text-secondary small">View past stay invoices, active check-in details, and PDF receipts.</p>
+    </div>
+    <a href="/rooms" class="btn btn-gold btn-sm fw-bold"><i class="fa-solid fa-plus me-1"></i> Book New Suite</a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Booking #</th>
+            <th>Type</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Invoice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof bookings !== 'undefined' && bookings.length > 0) { %>
+            <% bookings.forEach(b => { %>
+              <tr>
+                <td class="fw-bold font-heading text-gold"><%= b.bookingNumber %></td>
+                <td><span class="badge bg-light text-dark border"><%= b.bookingType %></span></td>
+                <td><%= b.checkInDate %></td>
+                <td><%= b.checkOutDate %></td>
+                <td>
+                  <% let sClass = 'bg-primary' %>
+                  <% if (b.status === 'CheckedIn') sClass = 'bg-success' %>
+                  <% if (b.status === 'CheckedOut') sClass = 'bg-secondary' %>
+                  <% if (b.status === 'Cancelled') sClass = 'bg-danger' %>
+                  <span class="badge <%= sClass %>"><%= b.status %></span>
+                </td>
+                <td class="fw-bold">$<%= parseFloat(b.totalAmount).toFixed(2) %></td>
+                <td>
+                  <a href="/bookings/<%= b.id %>/invoice" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-file-pdf me-1"></i> PDF</a>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="text-center py-4 text-muted">No reservations found in your history.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

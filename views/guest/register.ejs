@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-2xl p-4 rounded-4 bg-white border-top border-4 border-gold">
+        <div class="text-center mb-4">
+          <h3 class="font-heading fw-bold">Create Guest Account</h3>
+          <p class="text-secondary small">Register for instant suite reservations and in-room ordering.</p>
+        </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger alert-dismissible fade show small" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i> <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% } %>
+
+        <form action="/auth/register" method="POST">
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Full Name</label>
+            <input type="text" name="fullName" class="form-control" placeholder="Lord Alexander Vance" required>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Email Address</label>
+              <input type="email" name="email" class="form-control" placeholder="alexander@grandhaven.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Phone Number</label>
+              <input type="text" name="phone" class="form-control" placeholder="+1 800-555-0199" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Password</label>
+              <input type="password" name="password" class="form-control" placeholder="••••••••" required minlength="6">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Confirm Password</label>
+              <input type="password" name="confirmPassword" class="form-control" placeholder="••••••••" required minlength="6">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-gold w-100 fw-bold py-2 shadow mb-3"><i class="fa-solid fa-user-plus me-2"></i> Register Account</button>
+
+          <div class="text-center small text-secondary">
+            Already have an account? <a href="/auth/login" class="text-gold fw-bold text-decoration-none">Sign In</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

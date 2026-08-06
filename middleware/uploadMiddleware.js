@@ -2,15 +2,18 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 
-// Ensure upload folders exist
-const roomUploadDir = path.join(__dirname, '../public/uploads/rooms')
-const foodUploadDir = path.join(__dirname, '../public/uploads/food')
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true'
 
-if (!fs.existsSync(roomUploadDir)) {
-  fs.mkdirSync(roomUploadDir, { recursive: true })
-}
-if (!fs.existsSync(foodUploadDir)) {
-  fs.mkdirSync(foodUploadDir, { recursive: true })
+// Ensure upload folders exist
+const baseUploadPath = isVercel ? '/tmp' : path.join(__dirname, '../public/uploads')
+const roomUploadDir = path.join(baseUploadPath, 'rooms')
+const foodUploadDir = path.join(baseUploadPath, 'food')
+
+try {
+  if (!fs.existsSync(roomUploadDir)) fs.mkdirSync(roomUploadDir, { recursive: true })
+  if (!fs.existsSync(foodUploadDir)) fs.mkdirSync(foodUploadDir, { recursive: true })
+} catch (e) {
+  // Ignore filesystem error in read-only environment
 }
 
 // Room Image Storage Strategy

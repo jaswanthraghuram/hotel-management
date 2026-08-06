@@ -1,11 +1,18 @@
 const { Sequelize } = require('sequelize')
 require('dotenv').config()
 
-const useSqlite = process.env.USE_SQLITE === 'true'
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true'
 
 let sequelize
 
-if (useSqlite) {
+if (isVercel) {
+  // Use in-memory SQLite on Vercel read-only serverless environment
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: ':memory:',
+    logging: false
+  })
+} else if (process.env.USE_SQLITE === 'true') {
   sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: process.env.SQLITE_STORAGE || './database.sqlite',
@@ -31,7 +38,7 @@ const initializeDatabase = async () => {
     await sequelize.authenticate()
     console.log(`[Database] Connected successfully via ${sequelize.getDialect()}!`)
   } catch (error) {
-    console.warn(`[Database] MySQL connection error (${error.message}). To use SQLite set USE_SQLITE=true in .env.`)
+    console.warn(`[Database] Connection test error (${error.message}).`)
   }
 }
 

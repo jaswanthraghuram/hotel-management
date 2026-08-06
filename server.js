@@ -65,22 +65,26 @@ app.use('/admin', adminRoutes)
 // Error Handler
 app.use(errorHandler)
 
-// Initialize Database & Seeders
-let isInitialized = false
+// Initialize Database & Seeders safely for serverless
+let initPromise = null
 const initApp = async () => {
-  if (!isInitialized) {
-    await initializeDatabase()
-    await seedDatabase()
-    isInitialized = true
+  if (!initPromise) {
+    initPromise = (async () => {
+      await initializeDatabase()
+      await seedDatabase()
+    })()
   }
+  return initPromise
 }
 
 // Middleware to ensure DB init on Vercel serverless request
 app.use(async (req, res, next) => {
-  if (!isInitialized) {
+  try {
     await initApp()
+    next()
+  } catch (err) {
+    next()
   }
-  next()
 })
 
 // Database & Server Startup for Local Dev

@@ -65,12 +65,27 @@ app.use('/admin', adminRoutes)
 // Error Handler
 app.use(errorHandler)
 
-// Database & Server Startup
-const startServer = async () => {
-  try {
+// Initialize Database & Seeders
+let isInitialized = false
+const initApp = async () => {
+  if (!isInitialized) {
     await initializeDatabase()
     await seedDatabase()
+    isInitialized = true
+  }
+}
 
+// Middleware to ensure DB init on Vercel serverless request
+app.use(async (req, res, next) => {
+  if (!isInitialized) {
+    await initApp()
+  }
+  next()
+})
+
+// Database & Server Startup for Local Dev
+if (require.main === module) {
+  initApp().then(() => {
     app.listen(PORT, () => {
       console.log(`=======================================================`)
       console.log(`🚀 Grand Haven Hotel Management Server Running!`)
@@ -79,9 +94,7 @@ const startServer = async () => {
       console.log(`👤 Customer Account: customer@grandhaven.com | Pass: customer123`)
       console.log(`=======================================================`)
     })
-  } catch (error) {
-    console.error('[Server Startup Failed]', error)
-  }
+  })
 }
 
-startServer()
+module.exports = app
